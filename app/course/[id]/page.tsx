@@ -127,7 +127,7 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
         <div className="container mx-auto px-4 max-w-6xl">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">What You&apos;ll Learn</h2>
           <div className="grid md:grid-cols-2 gap-3">
-            {course.whatYouLearn.map((item) => (
+            {course.whatYouLearn.map((item: string) => (
               <div key={item} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                 <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
                 <span className="text-gray-700 text-sm">{item}</span>
