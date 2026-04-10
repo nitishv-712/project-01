@@ -1,21 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default function Login() {
+function LoginForm() {
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || null;
 
   function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    window.location.href = "https://study.skillcourse.in/login/?redirect_to=https%3A%2F%2Fstudy.skillcourse.in%2F";
+    localStorage.setItem("sc_logged_in", "1");
+    if (redirect) {
+      window.location.href = redirect;
+    } else {
+      window.location.href = "https://study.skillcourse.in/login/?redirect_to=https%3A%2F%2Fstudy.skillcourse.in%2F";
+    }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-gray-100 flex items-center justify-center py-16 px-4">
       <div className="w-full max-w-md">
-        {/* Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center mb-8">
             <Link href="/" className="inline-block mb-4">
@@ -80,7 +87,6 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Trust badges */}
         <div className="flex items-center justify-center gap-6 mt-6 text-xs text-gray-400">
           <span className="flex items-center gap-1">
             <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" /></svg>
@@ -97,5 +103,13 @@ export default function Login() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

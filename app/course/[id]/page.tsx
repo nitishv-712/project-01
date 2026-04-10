@@ -2,11 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import dbConnect from "@/lib/mongodb";
+import Course from "@/models/Course";
+
 async function getCourse(id: string) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/courses/${id}`, { cache: 'no-store' });
-    const data = await res.json();
-    return data.success ? data.data : null;
+    await dbConnect();
+    const course = await Course.findOne({ id, active: true }).lean();
+    return course ? JSON.parse(JSON.stringify(course)) : null;
   } catch {
     return null;
   }
@@ -14,9 +17,9 @@ async function getCourse(id: string) {
 
 async function getAllCourses() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/courses`, { cache: 'no-store' });
-    const data = await res.json();
-    return data.success ? data.data : [];
+    await dbConnect();
+    const courses = await Course.find({ active: true }).lean();
+    return JSON.parse(JSON.stringify(courses));
   } catch {
     return [];
   }

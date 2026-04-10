@@ -14,11 +14,16 @@ type Course = {
   image: string;
 };
 
+import dbConnect from "@/lib/mongodb";
+import Course from "@/models/Course";
+import Stats from "@/models/Stats";
+import Testimonial from "@/models/Testimonial";
+
 async function getCourses() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/courses`, { cache: 'no-store' });
-    const data = await res.json();
-    return data.success ? data.data.slice(0, 6) : [];
+    await dbConnect();
+    const courses = await Course.find({ active: true }).sort({ createdAt: -1 }).limit(6).lean();
+    return JSON.parse(JSON.stringify(courses));
   } catch {
     return [];
   }
@@ -26,14 +31,14 @@ async function getCourses() {
 
 async function getStats() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/stats`, { cache: 'no-store' });
-    const data = await res.json();
-    if (data.success) {
+    await dbConnect();
+    const stats = await Stats.findOne().lean() as any;
+    if (stats) {
       return [
-        { value: data.data.studentsEnrolled, label: "Students Enrolled" },
-        { value: data.data.videoTutorials, label: "Video Tutorials" },
-        { value: data.data.expertCourses, label: "Expert Courses" },
-        { value: data.data.youtubeSubscribers, label: "YouTube Subscribers" },
+        { value: stats.studentsEnrolled, label: "Students Enrolled" },
+        { value: stats.videoTutorials, label: "Video Tutorials" },
+        { value: stats.expertCourses, label: "Expert Courses" },
+        { value: stats.youtubeSubscribers, label: "YouTube Subscribers" },
       ];
     }
   } catch {}
@@ -47,9 +52,9 @@ async function getStats() {
 
 async function getTestimonials() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/testimonials`, { cache: 'no-store' });
-    const data = await res.json();
-    return data.success ? data.data.slice(0, 4) : [];
+    await dbConnect();
+    const testimonials = await Testimonial.find({ active: true }).sort({ createdAt: -1 }).limit(4).lean();
+    return JSON.parse(JSON.stringify(testimonials));
   } catch {
     return [];
   }
@@ -247,7 +252,7 @@ export default async function Home() {
             </div>
             <div className="flex justify-center animate-fadeInRight">
               <Image
-                src="/hero-image.webp"
+                src="/(20260409105023).png"
                 alt="Learn Job Skills"
                 width={580}
                 height={580}
