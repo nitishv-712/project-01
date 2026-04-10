@@ -56,7 +56,7 @@ export default function Header() {
                 </svg>
               </button>
               {microOpen && (
-                <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-100 py-2 w-52 z-50">
+                <div className="absolute top-full left-0 bg-white rounded-lg shadow-lg border border-gray-100 pt-4 pb-2 w-52 z-50">
                   {microCourses.map((c) => (
                     <Link key={c.href} href={c.href} className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition">
                       {c.label}
@@ -74,7 +74,7 @@ export default function Header() {
                 </svg>
               </button>
               {moreOpen && (
-                <div className="absolute top-full right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-100 py-2 w-44 z-50">
+                <div className="absolute top-full right-0 bg-white rounded-lg shadow-lg border border-gray-100 pt-4 pb-2 w-44 z-50">
                   {moreLinks.map((c) => (
                     <Link key={c.href} href={c.href} className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition">
                       {c.label}
