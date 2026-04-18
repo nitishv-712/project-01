@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Disable Dark Reader and other extensions from modifying the page */
+* {
+  color-scheme: light !important;
+}
+
+html[data-darkreader-mode],
+html[data-darkreader-scheme] {
+  color-scheme: light !important;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

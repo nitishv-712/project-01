@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Skill Course By Satish Dhawale - Learn Job-Oriented Skills",
   description:
     "We offer job-oriented skill courses at an affordable cost, designed to enhance your professional capabilities and boost your career prospects",
+  other: {
+    'darkreader-lock': '',
+  },
 };
 
 export default function RootLayout({
