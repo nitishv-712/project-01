@@ -2,14 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import dbConnect from "@/lib/mongodb";
-import Course from "@/models/Course";
+import { apiFetch } from "@/utils/api";
+import { Course } from "@/types";
 
 async function getCourse(id: string) {
   try {
-    await dbConnect();
-    const course = await Course.findOne({ id, active: true }).lean();
-    return course ? JSON.parse(JSON.stringify(course)) : null;
+    return await apiFetch<Course>(`/api/courses/${id}`);
   } catch {
     return null;
   }
@@ -17,9 +15,7 @@ async function getCourse(id: string) {
 
 async function getAllCourses() {
   try {
-    await dbConnect();
-    const courses = await Course.find({ active: true }).lean();
-    return JSON.parse(JSON.stringify(courses));
+    return await apiFetch<Course[]>('/api/courses');
   } catch {
     return [];
   }

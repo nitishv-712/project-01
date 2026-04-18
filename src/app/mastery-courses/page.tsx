@@ -1,14 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import dbConnect from "@/lib/mongodb";
-import Course from "@/models/Course";
+import { apiFetch } from "@/utils/api";
+import { Course } from "@/types";
 
 async function getCourses() {
   try {
-    await dbConnect();
-    const courses = await Course.find({ active: true }).sort({ createdAt: -1 }).lean();
-    return JSON.parse(JSON.stringify(courses));
+    return await apiFetch<Course[]>('/api/courses');
   } catch {
     return [];
   }

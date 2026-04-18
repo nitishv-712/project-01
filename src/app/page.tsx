@@ -1,29 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-
-type Course = {
-  id: string;
-  title: string;
-  instructor: string;
-  duration: string;
-  lessons: number;
-  language: string;
-  discount: number;
-  originalPrice: number;
-  price: number;
-  image: string;
-};
-
-import dbConnect from "@/lib/mongodb";
-import Course from "@/models/Course";
-import Stats from "@/models/Stats";
-import Testimonial from "@/models/Testimonial";
+import { apiFetch } from "@/utils/api";
+import { Course, Stats, Testimonial } from "@/types";
 
 async function getCourses() {
   try {
-    await dbConnect();
-    const courses = await Course.find({ active: true }).sort({ createdAt: -1 }).limit(6).lean();
-    return JSON.parse(JSON.stringify(courses));
+    const courses = await apiFetch<Course[]>('/api/courses');
+    return courses.filter(c => c.featured).slice(0, 6);
   } catch {
     return [];
   }
@@ -31,30 +14,27 @@ async function getCourses() {
 
 async function getStats() {
   try {
-    await dbConnect();
-    const stats = await Stats.findOne().lean() as any;
-    if (stats) {
-      return [
-        { value: stats.studentsEnrolled, label: "Students Enrolled" },
-        { value: stats.videoTutorials, label: "Video Tutorials" },
-        { value: stats.expertCourses, label: "Expert Courses" },
-        { value: stats.youtubeSubscribers, label: "YouTube Subscribers" },
-      ];
-    }
-  } catch {}
-  return [
-    { value: "230,000+", label: "Students Enrolled" },
-    { value: "1,300+", label: "Video Tutorials" },
-    { value: "21+", label: "Expert Courses" },
-    { value: "2M+", label: "YouTube Subscribers" },
-  ];
+    const stats = await apiFetch<Stats>('/api/stats');
+    return [
+      { value: stats.studentsEnrolled, label: "Students Enrolled" },
+      { value: stats.videoTutorials, label: "Video Tutorials" },
+      { value: stats.expertCourses, label: "Expert Courses" },
+      { value: stats.youtubeSubscribers, label: "YouTube Subscribers" },
+    ];
+  } catch {
+    return [
+      { value: "230,000+", label: "Students Enrolled" },
+      { value: "1,300+", label: "Video Tutorials" },
+      { value: "21+", label: "Expert Courses" },
+      { value: "2M+", label: "YouTube Subscribers" },
+    ];
+  }
 }
 
 async function getTestimonials() {
   try {
-    await dbConnect();
-    const testimonials = await Testimonial.find({ active: true }).sort({ createdAt: -1 }).limit(4).lean();
-    return JSON.parse(JSON.stringify(testimonials));
+    const testimonials = await apiFetch<Testimonial[]>('/api/testimonials');
+    return testimonials.slice(0, 4);
   } catch {
     return [];
   }
