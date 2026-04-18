@@ -1,22 +1,74 @@
 "use client";
 
 import Link from "next/link";
-import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, Suspense, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { apiFetch } from "@/utils/api";
+import { getAuthUser } from "@/utils/auth";
+import { AuthResponse } from "@/types";
 
 function LoginForm() {
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || null;
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
 
-  function handleLogin(e: React.FormEvent) {
+  useEffect(() => {
+    const user = getAuthUser();
+    if (user) {
+      router.replace(user.role === 'admin' ? '/admin/dashboard' : '/dashboard');
+    }
+  }, [router]);
+
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
+    setFieldErrors({ email: "", password: "" });
+
+    // Validation
+    const errors = { email: "", password: "" };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!form.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!emailRegex.test(form.email)) {
+      errors.email = "Please enter a valid email address";
+    }
+
+    if (!form.password) {
+      errors.password = "Password is required";
+    } else if (form.password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+    }
+
+    if (errors.email || errors.password) {
+      setFieldErrors(errors);
+      return;
+    }
+
     setLoading(true);
-    localStorage.setItem("sc_logged_in", "1");
-    if (redirect) {
-      window.location.href = redirect;
-    } else {
-      window.location.href = "https://study.skillcourse.in/login/?redirect_to=https%3A%2F%2Fstudy.skillcourse.in%2F";
+
+    try {
+      const data = await apiFetch<AuthResponse>('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(form),
+      });
+      localStorage.setItem('sc_token', data.token);
+      
+      if (redirect) {
+        router.push(redirect);
+      } else if (data.role === 'admin') {
+        router.push('/admin/dashboard');
+      } else {
+        router.push('/dashboard');
+      }
+    } catch (err: any) {
+      setError(err.message || "Invalid credentials");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -34,24 +86,50 @@ function LoginForm() {
             <p className="text-gray-500 mt-1 text-sm">Login to access your courses</p>
           </div>
 
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
               <input
                 type="email"
                 required
+                value={form.email}
+                onChange={(e) => {
+                  setForm({ ...form, email: e.target.value });
+                  if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: "" });
+                }}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm ${
+                  fieldErrors.email ? "border-red-300 bg-red-50" : "border-gray-200"
+                }`}
               />
+              {fieldErrors.email && (
+                <p className="mt-1.5 text-xs text-red-600">{fieldErrors.email}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
               <input
                 type="password"
                 required
+                value={form.password}
+                onChange={(e) => {
+                  setForm({ ...form, password: e.target.value });
+                  if (fieldErrors.password) setFieldErrors({ ...fieldErrors, password: "" });
+                }}
                 placeholder="Enter your password"
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm ${
+                  fieldErrors.password ? "border-red-300 bg-red-50" : "border-gray-200"
+                }`}
               />
+              {fieldErrors.password && (
+                <p className="mt-1.5 text-xs text-red-600">{fieldErrors.password}</p>
+              )}
             </div>
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 text-gray-600 cursor-pointer">
@@ -65,24 +143,16 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-orange-500 text-white py-3.5 rounded-lg hover:bg-orange-600 transition font-semibold text-base disabled:opacity-70 flex items-center justify-center gap-2"
+              className="w-full bg-orange-500 text-white py-3.5 rounded-lg hover:bg-orange-600 transition font-semibold text-base disabled:opacity-70"
             >
-              {loading ? (
-                <>
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Redirecting...
-                </>
-              ) : "Login to My Courses"}
+              {loading ? "Logging in..." : "Login to My Courses"}
             </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-gray-500">
             Don&apos;t have an account?{" "}
-            <Link href="/mastery-courses" className="text-orange-500 hover:text-orange-600 font-semibold">
-              Browse Courses
+            <Link href="/register" className="text-orange-500 hover:text-orange-600 font-semibold">
+              Create Account
             </Link>
           </div>
         </div>

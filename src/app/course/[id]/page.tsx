@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { apiFetch } from "@/utils/api";
 import { Course } from "@/types";
+import EnrollButton from "./EnrollButton";
 
 async function getCourse(id: string) {
   try {
@@ -93,21 +94,7 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
                 <span className="text-sm text-gray-400 line-through block">₹{course.originalPrice.toLocaleString("en-IN")}</span>
                 <span className="text-4xl font-bold text-orange-500">₹{course.price.toLocaleString("en-IN")}</span>
               </div>
-              <a
-                href={course.enrollUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full bg-orange-500 text-white py-3.5 rounded-lg hover:bg-orange-600 transition font-bold text-base flex items-center justify-center gap-2 mb-3"
-              >
-                Enroll Now
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-              </a>
-              <Link
-                href="/login"
-                className="w-full bg-gray-900 text-white py-3.5 rounded-lg hover:bg-gray-700 transition font-semibold text-base flex items-center justify-center gap-2"
-              >
-                Already Enrolled? Login
-              </Link>
+              <EnrollButton courseId={course.id} coursePrice={course.price} />
               <div className="mt-4 space-y-2 text-xs text-gray-500">
                 {["Lifetime Access", "Certificate of Completion", "Free Updates", "Dedicated Support"].map((item: string) => (
                   <div key={item} className="flex items-center gap-2">
@@ -169,15 +156,9 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
         <div className="container mx-auto px-4 max-w-2xl">
           <h2 className="text-3xl font-bold mb-3">Ready to Get Started?</h2>
           <p className="text-orange-100 mb-6">Join thousands of students already learning {course.title}</p>
-          <a
-            href={course.enrollUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-white text-orange-600 px-10 py-4 rounded-lg hover:bg-orange-50 transition font-bold text-lg shadow-lg"
-          >
-            Enroll Now at ₹{course.price.toLocaleString("en-IN")}
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-          </a>
+          <div className="max-w-xs mx-auto">
+            <EnrollButton courseId={course.id} coursePrice={course.price} />
+          </div>
         </div>
       </section>
     </div>

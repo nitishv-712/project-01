@@ -1,3 +1,32 @@
+export type Role = 'admin' | 'user';
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+}
+
+export interface AuthResponse {
+  token: string;
+  name: string;
+  email: string;
+  role: Role;
+}
+
+export interface Student {
+  _id: string;
+  name: string;
+  email: string;
+  role: 'user';
+  phone: string | null;
+  avatar: string | null;
+  verified: boolean;
+  enrolledCourses: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface CurriculumSection {
   section: string;
   lessons: number;
@@ -17,7 +46,6 @@ export interface Course {
   price: number;
   image: string;
   category: string;
-  enrollUrl: string;
   rating: number;
   students: number;
   lastUpdated: string;
@@ -26,6 +54,20 @@ export interface Course {
   curriculum: CurriculumSection[];
   featured: boolean;
   active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type OrderStatus = 'pending' | 'paid' | 'failed';
+
+export interface Order {
+  _id: string;
+  userId: string;
+  courseId: string;
+  amount: number;
+  status: OrderStatus;
+  paymentMethod: string;
+  transactionId: string;
   createdAt: string;
   updatedAt: string;
 }
