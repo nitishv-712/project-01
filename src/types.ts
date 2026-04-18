@@ -1,10 +1,30 @@
-export type Role = 'admin' | 'user';
+export type Role = 'superadmin' | 'admin' | 'user';
+
+export type Permission =
+  | 'courses:read'
+  | 'courses:create'
+  | 'courses:update'
+  | 'courses:delete'
+  | 'users:read'
+  | 'users:update'
+  | 'users:delete'
+  | 'testimonials:read'
+  | 'testimonials:create'
+  | 'testimonials:update'
+  | 'testimonials:delete'
+  | 'orders:read'
+  | 'stats:read'
+  | 'stats:update'
+  | 'media:upload'
+  | 'media:delete'
+  | 'profile:manage_own';
 
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
   role: Role;
+  permissions: Permission[];
 }
 
 export interface AuthResponse {
@@ -12,6 +32,7 @@ export interface AuthResponse {
   name: string;
   email: string;
   role: Role;
+  permissions: Permission[];
 }
 
 export interface Student {
@@ -23,6 +44,18 @@ export interface Student {
   avatar: string | null;
   verified: boolean;
   enrolledCourses: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Admin {
+  _id: string;
+  name: string;
+  email: string;
+  role: 'admin';
+  permissions: Permission[];
+  phone: string | null;
+  avatar: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -54,6 +87,12 @@ export interface Course {
   curriculum: CurriculumSection[];
   featured: boolean;
   active: boolean;
+  videoPath: string | null;
+  previewUrl: string | null;
+  videoMeta: {
+    title: string | null;
+    description: string | null;
+  } | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -87,4 +126,24 @@ export interface Testimonial {
   text: string;
   rating: number;
   active: boolean;
+}
+
+export interface AdminDashboard {
+  courses: { total: number; active: number; inactive: number };
+  students: { total: number; verified: number; unverified: number };
+  orders: { total: number; paid: number; pending: number; revenue: number };
+  testimonials: { total: number; active: number; inactive: number };
+  recentOrders: Order[];
+  recentStudents: Student[];
+}
+
+export interface PermissionsResponse {
+  permissions: Permission[];
+  presets: {
+    full_admin: Permission[];
+    course_manager: Permission[];
+    content_editor: Permission[];
+    user_manager: Permission[];
+    viewer: Permission[];
+  };
 }

@@ -111,7 +111,7 @@ export default function Header() {
                   </svg>
                 </button>
                 {profileOpen && (
-                  <div className="absolute top-full right-0 bg-white rounded-lg shadow-lg border border-gray-100 pt-2 pb-2 w-48 z-50 mt-1">
+                  <div className="absolute top-full right-0 bg-white rounded-lg shadow-lg border border-gray-100 pt-2 pb-2 w-48 z-50">
                     <div className="px-4 py-2 border-b border-gray-100">
                       <p className="text-xs text-gray-500">Signed in as</p>
                       <p className="text-sm font-medium text-gray-900 truncate">{user.email}</p>

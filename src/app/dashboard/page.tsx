@@ -22,16 +22,16 @@ export default function Dashboard() {
       return;
     }
     if (authUser.role !== 'user') {
-      router.replace('/');
+      router.replace(authUser.role === 'admin' || authUser.role === 'superadmin' ? '/admin/dashboard' : '/');
       return;
     }
 
-    setUser({ name: authUser.name, email: authUser.email });
+    setUser(null); // Will be set by the API call below
 
     // Fetch full student profile
     apiFetch<Student>('/api/auth/me')
       .then(setUser)
-      .catch(() => {});
+      .catch(() => setUser(null));
 
     apiFetch<Course[]>('/api/auth/my-courses')
       .then(setCourses)
@@ -126,7 +126,7 @@ export default function Dashboard() {
                       {course.duration}
                     </span>
                   </div>
-                  <Link href={`/course/${course.id}`} className="block w-full bg-orange-500 text-white text-center py-2.5 rounded-lg hover:bg-orange-600 transition font-semibold text-sm">
+                  <Link href={`/dashboard/course/${course.id}`} className="block w-full bg-orange-500 text-white text-center py-2.5 rounded-lg hover:bg-orange-600 transition font-semibold text-sm">
                     Continue Learning
                   </Link>
                 </div>

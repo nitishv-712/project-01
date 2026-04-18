@@ -15,11 +15,12 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
+  const [showAdminMode, setShowAdminMode] = useState(false);
 
   useEffect(() => {
     const user = getAuthUser();
     if (user) {
-      router.replace(user.role === 'admin' ? '/admin/dashboard' : '/dashboard');
+      router.replace((user.role === 'admin' || user.role === 'superadmin') ? '/admin/dashboard' : '/dashboard');
     }
   }, [router]);
 
@@ -60,7 +61,7 @@ function LoginForm() {
       
       if (redirect) {
         router.push(redirect);
-      } else if (data.role === 'admin') {
+      } else if (data.role === 'admin' || data.role === 'superadmin') {
         router.push('/admin/dashboard');
       } else {
         router.push('/dashboard');
@@ -77,13 +78,27 @@ function LoginForm() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center mb-8">
-            <Link href="/" className="inline-block mb-4">
-              <div className="text-2xl font-bold">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Link href="/" className="text-2xl font-bold">
                 Skill<span className="text-orange-500">Course</span>
-              </div>
-            </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Welcome Back!</h1>
-            <p className="text-gray-500 mt-1 text-sm">Login to access your courses</p>
+              </Link>
+              <button
+                type="button"
+                onClick={() => setShowAdminMode(!showAdminMode)}
+                className="text-orange-500 hover:text-orange-600 transition"
+                title="Admin Login"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {showAdminMode ? "Admin Access" : "Welcome Back!"}
+            </h1>
+            <p className="text-gray-500 mt-1 text-sm">
+              {showAdminMode ? "Restricted area - Admin credentials required" : "Login to access your courses"}
+            </p>
           </div>
 
           {error && (

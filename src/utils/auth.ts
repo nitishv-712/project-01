@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode';
-import { AuthUser } from '@/types';
+import { AuthUser, Permission } from '@/types';
 
 export function getAuthUser(): AuthUser | null {
   if (typeof window === 'undefined') return null;
@@ -10,6 +10,17 @@ export function getAuthUser(): AuthUser | null {
   } catch {
     return null;
   }
+}
+
+export function can(permission: Permission): boolean {
+  const user = getAuthUser();
+  if (!user) return false;
+  if (user.role === 'superadmin') return true;
+  return user.permissions.includes(permission);
+}
+
+export function isSuperAdmin(): boolean {
+  return getAuthUser()?.role === 'superadmin';
 }
 
 export function isAdmin(): boolean {
