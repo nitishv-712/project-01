@@ -15,7 +15,7 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     const user = getAuthUser();
-    if (!user || user.role !== 'admin') {
+    if (!user || (user.role !== 'admin' && user.role !== 'superadmin')) {
       router.replace('/login');
       return;
     }

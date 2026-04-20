@@ -20,7 +20,7 @@ export default function NewCoursePage() {
 
   useEffect(() => {
     const user = getAuthUser();
-    if (!user || user.role !== 'admin') router.replace('/login');
+    if (!user || (user.role !== 'admin' && user.role !== 'superadmin')) router.replace('/login');
   }, [router]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

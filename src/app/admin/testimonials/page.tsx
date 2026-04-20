@@ -14,7 +14,7 @@ export default function AdminTestimonialsPage() {
 
   useEffect(() => {
     const user = getAuthUser();
-    if (!user || user.role !== 'admin') {
+    if (!user || (user.role !== 'admin' && user.role !== 'superadmin')) {
       router.replace('/login');
       return;
     }
