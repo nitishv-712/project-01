@@ -23,6 +23,8 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="https://checkout.razorpay.com/v1/checkout.js" />
       </body>
     </html>
   );
