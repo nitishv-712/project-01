@@ -151,9 +151,9 @@ function LoginForm() {
                 <input type="checkbox" className="rounded border-gray-300 text-orange-500" />
                 Remember me
               </label>
-              <a href="https://study.skillcourse.in/login/" target="_blank" rel="noreferrer" className="text-orange-500 hover:text-orange-600 font-medium">
+              <span className="text-gray-400 font-medium cursor-not-allowed" title="Coming soon">
                 Forgot password?
-              </a>
+              </span>
             </div>
             <button
               type="submit"

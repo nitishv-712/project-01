@@ -49,10 +49,10 @@ export default function PowerBIMicroCourse() {
                 </span>
               </div>
               <div className="flex flex-wrap gap-3 pt-2">
-                <a href="https://study.skillcourse.in" target="_blank" rel="noreferrer"
+                <Link href="/mastery-courses"
                   className="bg-orange-500 text-white px-8 py-3.5 rounded-lg hover:bg-orange-600 transition font-bold">
                   Enroll Now
-                </a>
+                </Link>
                 <Link href="/mastery-courses" className="bg-white/10 text-white border border-white/20 px-8 py-3.5 rounded-lg hover:bg-white/20 transition font-semibold">
                   View All Courses
                 </Link>
@@ -111,13 +111,13 @@ export default function PowerBIMicroCourse() {
         <div className="container mx-auto px-4 max-w-2xl">
           <h2 className="text-3xl font-bold mb-3">Start Building Dashboards Today</h2>
           <p className="text-orange-100 mb-8">Join thousands of students who have already mastered Power BI with Skill Course.</p>
-          <a href="https://study.skillcourse.in" target="_blank" rel="noreferrer"
+          <Link href="/mastery-courses"
             className="inline-flex items-center gap-2 bg-white text-orange-600 px-10 py-4 rounded-lg hover:bg-orange-50 transition font-bold text-lg shadow-lg">
             Enroll Now
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-          </a>
+          </Link>
         </div>
       </section>
 
