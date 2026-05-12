@@ -80,7 +80,7 @@ export default function EditCoursePage() {
     xhr.onload = () => {
       const res = JSON.parse(xhr.responseText);
       if (res.success) {
-        setCourse({ ...course!, videoPath: res.data.videoPath, videoMeta: res.data.videoMeta });
+        setCourse({ ...course!, videoPath: res.data.videoUrl, videoMeta: { title: videoTitle, description: videoDescription } });
         setVideoFile(null);
         setUploadProgress(0);
       }

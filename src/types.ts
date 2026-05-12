@@ -1,3 +1,5 @@
+import { Schema } from "mongoose";
+
 export type Role = 'superadmin' | 'admin' | 'user';
 
 export type Permission =
@@ -60,9 +62,17 @@ export interface Admin {
   updatedAt: string;
 }
 
+export interface Lesson {
+  lessonId: string;
+  title: string;
+  duration: string | null;
+  videoId: string | null;
+}
+
+
 export interface CurriculumSection {
   section: string;
-  lessons: number;
+  lessons: Lesson[];
 }
 
 export interface Course {
@@ -87,12 +97,7 @@ export interface Course {
   curriculum: CurriculumSection[];
   featured: boolean;
   active: boolean;
-  videoPath: string | null;
   previewUrl: string | null;
-  videoMeta: {
-    title: string | null;
-    description: string | null;
-  } | null;
   createdAt: string;
   updatedAt: string;
 }
